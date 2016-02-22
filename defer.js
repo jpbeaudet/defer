@@ -10,7 +10,8 @@ var defer = module.exports = {
 "Deferred": function(){
 	this.callbacks=[];
 	this.errbacks= [] ;
-	this.conditions= [] ;
+	this.defered_list_cb= [] ;
+	this.defered_list_eb= [] ;
 	return this;
 },
 //* add callback to defer object
@@ -30,20 +31,14 @@ var defer = module.exports = {
 "returnValue": function(value){
 	var err = new Error("defer.js: callback returned a wrong value", arguments.callee.caller.toString());
 	if (value && value != undefined && value != null){
-		console.log("callbacks = " +this.callbacks)
-		for (i = 0; i < this.callbacks.length; i++) {
-			console.log("callbacks nb "+ i+" "+this.callbacks[i])
-			console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved)
+		//console.log("callbacks = " +this.callbacks);
+		for (var i = 0; i < this.callbacks.length; i++) {
+			//console.log("callbacks nb "+ i+" "+this.callbacks[i]);
+			//console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved);
 			if(this.callbacks[i].resolved != true && i <  this.callbacks.length){
 				this.callbacks[i].resolved = true;
-				//this.errbacks[i].resolved = true;
-				//if(this.callbacks[i+1] && this.callbacks[i+1].resolved !=true){var next = this.callbacks[i](value); this.callbacks[i+1](next)}
-				//this.callbacks[i](value);
-				this.event = "callback nb " +i+" returned : "+value;
 				if(this.callbacks[i+1] && this.callbacks[i+1].resolved !=true){
 				var next = this.callbacks[i](value); 				
-				//this.callbacks[i].resolved = true;
-				//this.errbacks[i].resolved = true;
 				return this.returnValue(next);
 				}else{
 					this.callbacks[i](value);	
@@ -69,22 +64,36 @@ var defer = module.exports = {
 
 },
 // defered list constructor
-"defered_list": function(){
-	
+"defered_list": function(value){
+	this.defered_list_cb= [] ;
+	this.defered_list_eb= [] ;
+	return this;	
 },
 // defered_list add callback
-"defered_list_addCallback": function(value, _cb){
-	
+"defered_list_addCallback": function( _cb){
+	//console.log("defered_list_cb  = "+_cb)
+	this.defered_list_cb.push(_cb);
+	//console.log("defered_list_cb after = "+this.defered_list_cb)
+	var len = this.defered_list_cb.length;
+	this.defered_list_cb[len-1].resolved= false;
 },
 //defered list add errback
-"defered_list_addErrback": function(value, _eb){
-	
+"defered_list_addErrback": function( _eb){
+	this.defered_list_eb.push(_eb);
+	var len = this.defered_list_eb.length;
+	this.defered_list_eb[len -1].resolved= false;	
 },
-"defered_listReturnValue": function(value){
-	
-},
-// *** status object for progress and event emitter
-"event": function(){
-	this.status = "status";
-}		
+// resolve the call back simultaneously and return errback if one of the value is wrong
+"defered_list_returnValue": function(value){
+	//console.log("defered_list_cb  = "+this.defered_list_cb );
+	for (var i = 0; i < this.defered_list_cb.length; i++) {	
+		//console.log("defered_list_cb[i]  = "+i+" "+this.defered_list_cb[i] )
+		if (value && value != undefined && value != null){
+		this.defered_list_cb[i](value);
+		}else{
+		var err = new Error("defer.js: defered_list_cb callback returned a wrong value", arguments.callee.caller.toString());
+		this.defered_list_eb[i](err, value);};
+	}	
+}
+
 };

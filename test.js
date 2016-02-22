@@ -44,3 +44,17 @@ d.addErrback(_eb2);
 d.returnValue(ret);
 }
 _main(1);
+function _main2(a){
+	
+	var dl = defer.defered_list();
+	var b =2;
+	var ret = a+b;
+	dl.defered_list_addCallback(_cb);
+	dl.defered_list_addCallback(_cb2);
+	dl.defered_list_addCallback(_cb3);
+	dl.defered_list_addCallback(_cb4);
+	dl.defered_list_addErrback(_eb);
+	dl.defered_list_addErrback(_eb2);
+	dl.defered_list_returnValue(ret);
+	}
+_main2(1);
