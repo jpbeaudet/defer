@@ -7,10 +7,10 @@
 
 var defer = module.exports = {
 // *  base constructor that will return the sample defer object
-"init": function(){
+"Deferred": function(){
 	this.callbacks=[];
 	this.errbacks= [] ;
-
+	this.conditions= [] ;
 	return this;
 },
 //* add callback to defer object
@@ -37,17 +37,31 @@ var defer = module.exports = {
 },
 // * function that will handle the return value and send the result to resolve to check if the result is a success or a fail
 "returnValue": function(value){
-	var err = new Error("defer.js: callback returned a wrong value", arguments.callee.caller.toString())
+	var err = new Error("defer.js: callback returned a wrong value", arguments.callee.caller.toString());
 	if (value && value != undefined && value != null){
-		for (x in this.callbacks){
-			if(this.callbacks[x].resolved != true){
-				this.callbacks[x].resolved = true;
-				this.errbacks[x].resolved = true;
-				this.callbacks[x](value);
-				this.event = "callback nb " + x+" returned : "+value;
-				break;
+		console.log("callbacks = " +this.callbacks)
+		for (i = 0; i < this.callbacks.length; i++) {
+			console.log("callbacks nb "+ i+" "+this.callbacks[i])
+			console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved)
+			if(this.callbacks[i].resolved != true && i <  this.callbacks.length){
+				this.callbacks[i].resolved = true;
+				//this.errbacks[i].resolved = true;
+				//if(this.callbacks[i+1] && this.callbacks[i+1].resolved !=true){var next = this.callbacks[i](value); this.callbacks[i+1](next)}
+				//this.callbacks[i](value);
+				this.event = "callback nb " +i+" returned : "+value;
+				if(this.callbacks[i+1] && this.callbacks[i+1].resolved !=true){
+				var next = this.callbacks[i](value); 				
+				//this.callbacks[i].resolved = true;
+				//this.errbacks[i].resolved = true;
+				return this.returnValue(next);
+				}else{
+					this.callbacks[i](value);	
+					break;	
+				}
+				
 			}
 		}
+
 	}else{
 
 		this.event.error = err;
@@ -63,16 +77,8 @@ var defer = module.exports = {
 		}		
 		}
 	}
+	//}
 },
-// ** add conditions for the value of promises. The conditions will be parsed in order
-//, if only one provided it will run for all callbacks
-"addCondition": function(condition){
-	this.conditions = condition;
-},
-// ** function that will determine if result is true or false and return the signal for callback  or errback
-"resolve": function(){
-}
-,
 // *** status object for progress and event emitter
 "event": function(){
 	this.status = "status";
