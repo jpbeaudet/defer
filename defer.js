@@ -26,15 +26,6 @@ var defer = module.exports = {
 	var len = this.errbacks.length;
 	this.errbacks[len -1].resolved= false;
 },
-// *** append multiple callback for a defered list
-"append": function(defered_list, def){
-	var deflist = {};
-	if (defered_list != undefined){
-		defered_list.append(def);
-	}else{
-		deflist.append(def);
-	}
-},
 // * function that will handle the return value and send the result to resolve to check if the result is a success or a fail
 "returnValue": function(value){
 	var err = new Error("defer.js: callback returned a wrong value", arguments.callee.caller.toString());
@@ -80,7 +71,6 @@ var defer = module.exports = {
 	}
 
 },
-
 // *** status object for progress and event emitter
 "event": function(){
 	this.status = "status";
