@@ -48,13 +48,10 @@ var defer = module.exports = {
 				}else{
 					this.callbacks[i](value);	
 					break;	
-				}
-				
+				}			
 			}
 		}
-
-	}else{
-
+	}else{	// if value was undefined or null and any other err conditions i will need in future
 		this.event.error = err;
 		if(this.errbacks.lenght < 2){	
 			this.errbacks[0].resolved =true;
@@ -65,11 +62,26 @@ var defer = module.exports = {
 				this.errbacks[x](err, value);
                 this.errbacks[x].resolved = true;
 				break;
+				}
+				}		
 			}
-		}		
 		}
-	}
 
+},
+// defered list constructor
+"defered_list": function(){
+	
+},
+// defered_list add callback
+"defered_list_addCallback": function(value, _cb){
+	
+},
+//defered list add errback
+"defered_list_addErrback": function(value, _eb){
+	
+},
+"defered_listReturnValue": function(value){
+	
 },
 // *** status object for progress and event emitter
 "event": function(){
