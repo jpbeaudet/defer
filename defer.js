@@ -65,20 +65,22 @@ var defer = module.exports = {
 	}else{
 
 		this.event.error = err;
-		if(this.errbacks.lenght < 2){			
+		if(this.errbacks.lenght < 2){	
+			this.errbacks[0].resolved =true;
 			return this.errbacks[0](err, value);
 		}else{
 		for (x in this.errbacks){
 			if(this.errbacks[x].resolved != true){
 				this.errbacks[x](err, value);
-
+                this.errbacks[x].resolved = true;
 				break;
 			}
 		}		
 		}
 	}
-	//}
+
 },
+
 // *** status object for progress and event emitter
 "event": function(){
 	this.status = "status";

@@ -17,6 +17,11 @@ function _cb3(value){
 	console.log("ret3: "+ ret);
 	return ret;
 }
+function _cb4(value){
+	var ret = value *2;
+	console.log("ret4: "+ ret);
+	return ret;
+}
 function _eb(err, value){
 	console.log("err : "+ err);
 	return err;
@@ -33,8 +38,9 @@ var ret = a+b;
 d.addCallback(_cb);
 d.addCallback(_cb2);
 d.addCallback(_cb3);
+d.addCallback(_cb4);
 d.addErrback(_eb);
-
+d.addErrback(_eb2);
 d.returnValue(ret);
 }
 _main(1);
