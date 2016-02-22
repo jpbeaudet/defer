@@ -7,6 +7,11 @@ function _cb(value){
 	console.log("ret1: "+ ret);
 	return ret;
 }
+function _cb222(value, value2){
+	var ret = value *2+value2;
+	console.log("ret222: "+ ret);
+	return ret;
+}
 function _cb2(value){
 	var ret = value *2;
 	console.log("ret2: "+ ret);
@@ -49,12 +54,12 @@ function _main2(a){
 	var dl = defer.defered_list();
 	var b =2;
 	var ret = a+b;
-	dl.defered_list_addCallback(_cb);
-	dl.defered_list_addCallback(_cb2);
-	dl.defered_list_addCallback(_cb3);
-	dl.defered_list_addCallback(_cb4);
-	dl.defered_list_addErrback(_eb);
-	dl.defered_list_addErrback(_eb2);
+	dl.defered_list_addCallback(_cb222, [1,2]);
+	dl.defered_list_addCallback(_cb2 , [1]);
+	dl.defered_list_addCallback(_cb3, [1]);
+	dl.defered_list_addCallback(_cb4, [1]);
+	dl.defered_list_addErrback(_eb, [1]);
+	dl.defered_list_addErrback(_eb2, [1]);
 	dl.defered_list_returnValue(ret);
 	}
 _main2(1);

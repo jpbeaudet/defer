@@ -1,9 +1,7 @@
 // Author : Jean-Philippe Beaudet @ S3R3NITY Technologies
 // defer.js
 // Development of a defered twisted web style node.js promise implementation.
-// * first dev priority
-// ** second round of dev
-// *** optional or nice to have
+// version 0.0.1
 
 var defer = module.exports = {
 // *  base constructor that will return the sample defer object
@@ -16,16 +14,27 @@ var defer = module.exports = {
 },
 //* add callback to defer object
 "addCallback": function(_cb){
+	if(typeof(_cb)== "function"){
 	this.callbacks.push(_cb);
 	var len = this.callbacks.length;
 	this.callbacks[len -1].resolved= false;
-	
+	}else{
+		var err = new Error("defer.js: defered callback is not a function", arguments.callee.caller.toString());
+		console.log(err);	
+		return err;
+	}
 },
 // * add errback to defer object
 "addErrback": function(_eb){
+	if(typeof(_eb)== "function"){
 	this.errbacks.push(_eb);
 	var len = this.errbacks.length;
 	this.errbacks[len -1].resolved= false;
+	}else{
+		var err = new Error("defer.js: defered errback is not a function", arguments.callee.caller.toString());
+		console.log(err);	
+		return err;
+	}
 },
 // * function that will handle the return value and send the result to resolve to check if the result is a success or a fail
 "returnValue": function(value){
@@ -47,7 +56,6 @@ var defer = module.exports = {
 			}
 		}
 	}else{	// if value was undefined or null and any other err conditions i will need in future
-		this.event.error = err;
 		if(this.errbacks.lenght < 2){	
 			this.errbacks[0].resolved =true;
 			return this.errbacks[0](err, value);
@@ -67,21 +75,37 @@ var defer = module.exports = {
 "defered_list": function(value){
 	this.defered_list_cb= [] ;
 	this.defered_list_eb= [] ;
+	this.defered_list_cb_args=[];
+	this.defered_list_eb_args=[];
 	return this;	
 },
 // defered_list add callback
-"defered_list_addCallback": function( _cb){
+"defered_list_addCallback": function( _cb, args){
+	if(typeof(_cb)== "function"){
 	//console.log("defered_list_cb  = "+_cb)
 	this.defered_list_cb.push(_cb);
+	this.defered_list_cb_args.push(args);
 	//console.log("defered_list_cb after = "+this.defered_list_cb)
 	var len = this.defered_list_cb.length;
 	this.defered_list_cb[len-1].resolved= false;
+	}else{
+		var err = new Error("defer.js: defered_list callback is not a function", arguments.callee.caller.toString());
+		console.log(err);	
+		return err;
+	}
 },
 //defered list add errback
-"defered_list_addErrback": function( _eb){
+"defered_list_addErrback": function( _eb, args){
+	if(typeof(_eb)== "function"){
 	this.defered_list_eb.push(_eb);
+	this.defered_list_eb_args.push(args);
 	var len = this.defered_list_eb.length;
-	this.defered_list_eb[len -1].resolved= false;	
+	this.defered_list_eb[len -1].resolved= false;
+	}else{
+		var err = new Error("defer.js: defered_list errback is not a function", arguments.callee.caller.toString());
+		console.log(err);
+		return err;
+	}
 },
 // resolve the call back simultaneously and return errback if one of the value is wrong
 "defered_list_returnValue": function(value){
@@ -89,10 +113,14 @@ var defer = module.exports = {
 	for (var i = 0; i < this.defered_list_cb.length; i++) {	
 		//console.log("defered_list_cb[i]  = "+i+" "+this.defered_list_cb[i] )
 		if (value && value != undefined && value != null){
-		this.defered_list_cb[i](value);
+		var args = this.defered_list_cb_args[i];
+		//this.defered_list_cb[i](args[0]);
+		this.defered_list_cb[i].apply(this,args);
 		}else{
 		var err = new Error("defer.js: defered_list_cb callback returned a wrong value", arguments.callee.caller.toString());
-		this.defered_list_eb[i](err, value);};
+		var args = this.defered_list_eb_args[i];
+		//args.push(err)
+		this.defered_list_eb[i].apply(this,err,args);};
 	}	
 }
 
