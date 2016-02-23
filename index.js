@@ -90,6 +90,7 @@ module.exports = {
 	//console.log("defered_list_cb after = "+this.defered_list_cb)
 	var len = this.defered_list_cb.length;
 	this.defered_list_cb[len-1].resolved= false;
+	return true
 	}else{
 		var err = new Error("defer.js: defered_list callback is not a function", arguments.callee.caller.toString());
 		console.log(err);	
@@ -103,6 +104,7 @@ module.exports = {
 	this.defered_list_eb_args.push(args);
 	var len = this.defered_list_eb.length;
 	this.defered_list_eb[len -1].resolved= false;
+	return true;
 	}else{
 		var err = new Error("defer.js: defered_list errback is not a function", arguments.callee.caller.toString());
 		console.log(err);

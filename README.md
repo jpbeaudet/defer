@@ -1,11 +1,13 @@
 # Defer.js
-## A very ligthweigth twisted.web type of promise implementation for node.js for full async progamming
+### A very ligthweigth twisted.web type implementation for node.js for full async progamming
 
-### install:
+### install: (not packaged yet. Coming very soon !)
     npm defer
 ### sample usage:
 ##### The difference between chained defers and defered lists is that chain defer wil take the output value of the last callback to the next and defered_lists will take args as argument and will input those args on the callback or errback
 #### add callbacks and errback
+    var defer = require('./index.js')
+    // var defer = require('defer')
     function _cb(value){
 	var ret = value *2;
 	console.log("ret1: "+ ret);
@@ -26,6 +28,8 @@
     _main(1);
 
 #### add defered_list callbacks and errbacks
+    var defer = require('./index.js')
+    // var defer = require('defer')
     function _cb(value){
 	var ret = value *2;
 	console.log("ret1: "+ ret);
@@ -49,8 +53,8 @@
 	}
     _main2(1);
 #### declare your callbacks and errback and then add it to either a defered_list (defer.defered_list_cb_addCallback) or a chain defer (defer.adCallback)
-    var defer = require('defer')
-    var defer = require("./defer.js");
+    var defer = require('./index.js')
+    // var defer = require('defer')
 
     function _cb(value){
 	var ret = value *2;
@@ -85,6 +89,8 @@
 	console.log("err : "+ err);
 	return err;
     }
+    
+    // First main funtion to start the callbacks errbacks chain (Cascade)
     function _main(a){
 	
     var d = defer.Deferred();
@@ -99,6 +105,8 @@
     d.returnValue(ret);
     }
     _main(1);
+    
+    // Second main funtion to start the callbacks errbacks list (In paralell)
     function _main2(a){
 	
 	var dl = defer.defered_list();
