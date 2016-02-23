@@ -2,7 +2,7 @@
   "name": "defer.js",
   "version": "0.0.1",
   "description": "A twisted.web type of promise implementation for node.js",
-  "main": "index.js",
+  "main": "defer.js",
   "scripts": {
     "test": "echo "Error: no test specified" && exit 1"
   },
