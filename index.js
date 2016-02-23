@@ -31,19 +31,20 @@ module.exports = {
 			}else{
 				this.promises_validator = "" ; 
 			   }
+		   			
+			if(arguments[i].startsWith("<")){ 
+				   this.promises_validator = "<";	
+				}else if(arguments[i].startsWith(">")){
+					this.promises_validator = ">"; 
+				   }else{this.promises_validator = "="; }			   
+			   }
 		   }		   
 		   // promise is greater or lower than int/float or exactly the equal value		   
 		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" || typeof(arguments[i])=="number" ){
 			   this.promises.push(arguments[i]);
 			   this.promises_type.push(typeof(arguments[i]));
 			   this.promises.resolved = false;
-			   var str_arg = arguments[i].toString() ;
-			if(str_arg.startsWith("<")){ 
-			   this.promises_validator = "<";	
-			}else if(str_arg.startsWith(">")){
-				this.promises_validator = ">"; 
-			   }else{this.promises_validator = "="; }			   
-		   }		   
+		   
 		   		   
 		  }	
 },
@@ -65,7 +66,7 @@ module.exports = {
 // if false then the falback fire 
 // if err the errback fires
 "resolvePromise": function(value){
-	   this.promises.success = false;
+	   var success = false;
 	  for (var i = 0; i < this.promises.length; i++) {
 
 		   // promise is a boolean
@@ -76,26 +77,43 @@ module.exports = {
 		   if (typeof(this.promises[i]) == "string"){
 			   console.log("validator = "+ this.promises_validator)
 			   if (this.promises_validator[i] == "="){
-				   if (value === this.promises[i]){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+				   if (value === this.promises[i]){this.promises.resolved[i] = true;success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else{
 				   var str = value.toString();
 				   console.log(typeof(str))
 				   var res = str.search(this.promises[i]);
-				   if (res.length>0){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+				   if (res.length>0){this.promises.resolved[i] = true;success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }
-		   }		   
-		   // promise is greater or lower than int/float or exactly the equal value		   
-		   if (this.promises_type[i] == "int" || this.promises_type[i] =="float" ||  typeof(arguments[i])=="number" ){
-			   if (this.promises_validator[i] == "<"){
-				   if ( this.promises[i] < value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
-			   }else if(this.promises_validator[i] == ">"){
-				   if ( this.promises[i] > value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+		   }	
+		  if (this.promises_validator[i] == "<"){
+			  console.log("value = "+value+ " is type: "+typeof(value))
+              var comparator = Number(this.promises[i].slice(1));
+		   if (value  < comparator){
+			   console.log(comparator+" < value Success");			   
+			   this.promises.resolved[i] = true;success = true;
 			   }else{
-				   if ( this.promises[i] == value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
-			   }			   
+				console.log(comparator +" < value Fail"); 
+				this.promises.resolved[i] = false; success = false;};
+		  }else if(
+				  
+			  this.promises_validator[i] == ">"){
+			  console.log("value = "+value+ " is type: "+typeof(value))
+              var comparator = Number(this.promises[i].slice(1));
+		   if ( value > comparator){
+			   console.log(comparator +" > value Success");
+			   this.promises.resolved[i] = true;success = true;
+			   }else{
+					console.log(comparator +" > value Fail"); 
+			this.promises.resolved[i] = false; success = false;};
+		  }
+			   // promise is greater or lower than int/float or exactly the equal value		   
+		   if (this.promises_type[i] == "int" || this.promises_type[i] =="float" ||  typeof(arguments[i])=="number" ){
+		   if ( this.promises[i] == value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+			  			   
 		   }		   
 		  if(i == (this.promises.length-1)){
-			  if(this.promises.sucess){return true;}else{return false;}
+			  console.log("Promise success: "+success);
+			  if(success == true){return true;}else{return false;}
 		  }
 	  }
 },
