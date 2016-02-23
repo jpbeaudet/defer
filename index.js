@@ -52,7 +52,7 @@ module.exports = {
 				var next = this.callbacks[i](value); 				
 				return this.returnValue(next);
 				}else{
-					this.callbacks[i](value);	
+					return this.callbacks[i](value);	
 					break;	
 				}			
 			}
