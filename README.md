@@ -28,8 +28,36 @@ The difference between chained defers and defered lists is that chain defer wil 
     }
     _main(1);
     >> Will output 6 and 12
-
-####% add defered_list callbacks and errbacks
+##### add promises and cuse fallback on rejection
+    //Let's use callbacks and fallbacks and errbacks in the same logic
+    function _main3(a){
+    function _cb(value){
+	var ret = value *2;
+	console.log("ret1: "+ ret);
+	return ret;
+    }
+    function _eb(err, value){
+	console.log("err : "+ err);
+	return err;
+    }
+    function _fb(value){
+	var ret = value +1;
+	console.log("ret fb: "+ ret);
+	return ret;
+    }
+    console.log("Starting main3 example function");		
+    var d = defer.Deferred();
+    var b =2;
+    var ret = a+b;
+    d.addCallback(_cb);
+    d.addFallback(_fb);
+    d.addPromise("<6");
+    d.addErrback(_eb);
+    d.returnValue(ret);
+    }
+    _main3(1);
+    >> output promise has succeded value (1+2) was lower than 6 and then it fired_fb that added 1 = output 4
+#### add defered_list callbacks and errbacks
     var defer = require("./index.js");
     // var defer =  require('defer');
     
