@@ -1,6 +1,6 @@
 // test place for defer.js
 
-var defer = require("./defer.js");
+var defer = require("./index.js");
 
 function _cb(value){
 	var ret = value *2;
