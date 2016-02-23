@@ -63,31 +63,35 @@ module.exports = {
 // if false then the falback fire 
 // if err the errback fires
 "resolvePromise": function(value){
+	   this.promises.success = false;
 	  for (var i = 0; i < this.promises.length; i++) {
+
 		   // promise is a boolean
 		   if (this.promises.type[i] == "boolean"){
-           if(this.promises[i] == true){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+           if(this.promises[i] == true){this.promises.resolved[i] = true; this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 		   }
 		   // promise is a string that must be contained or must be exactly equal
 		   if (this.promises.type[i] == "string"){
 			   if (this.promises.validator[i] == "="){
-				   if (value === this.promises[i]){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+				   if (value === this.promises[i]){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else{
 				   var res = value.match(this.promises[i]);
-				   if (res.length>0){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+				   if (res.length>0){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; rthis.promises.success = false;};
 			   }
 		   }		   
 		   // promise is greater or lower than int/float or exactly the equal value		   
 		   if (this.promises.type[i] == "int" || this.promises.type[i] =="float" ){
 			   if (this.promises.validator[i] == "<"){
-				   if ( this.promises[i] < value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+				   if ( this.promises[i] < value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else if(this.promises.validator[i] == ">"){
-				   if ( this.promises[i] > value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+				   if ( this.promises[i] > value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else{
-				   if ( this.promises[i] == value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+				   if ( this.promises[i] == value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }			   
 		   }		   
-		  
+		  if(i == (this.promises.length-1)){
+			  if(this.promises.sucess){return true;}else{return false;}
+		  }
 	  }
 },
 //*  base constructor that will return the sample defer object
@@ -132,6 +136,11 @@ module.exports = {
 	if (value && value != undefined && value != null){
 		//console.log("callbacks = " +this.callbacks);
 		for (var i = 0; i < this.callbacks.length; i++) {
+			var ok = false;
+			console.log("promise length ="+ this.promises.length)
+			if(this.promises.length != 0){ok = this.resolvePromise(value);console.log("The promise was accepted callback will fire");}else{
+				ok = true; console.log("No promises was called");}			
+			if(ok){ 
 			
 			//console.log("callbacks nb "+ i+" "+this.callbacks[i]);
 			//console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved);
@@ -145,6 +154,12 @@ module.exports = {
 					break;	
 				}			
 			}
+		}else{
+			console.log("The promise was rejected fallback will fire");
+			this.promises.resolved = true;
+			return this.fallbacks[i](value);
+
+		}
 		}
 	}else{	// if value was undefined or null and any other err conditions i will need in future
 		if(this.errbacks.lenght < 2){	
@@ -208,9 +223,22 @@ module.exports = {
 	for (var i = 0; i < this.defered_list_cb.length; i++) {	
 		//console.log("defered_list_cb[i]  = "+i+" "+this.defered_list_cb[i] )
 		if (value && value != undefined && value != null){
+		var ok = false;
+		console.log("promise length ="+ this.promises.length)
+		if(this.promises.length != 0){ok = this.resolvePromise(value);
+		console.log("The promise was accepted callback will fire");
+		}else{
+			ok = true; console.log("No promises was called");}			
+		if(ok){ 
 		var args = this.defered_list_cb_args[i];
 		//this.defered_list_cb[i](args[0]);
 		this.defered_list_cb[i].apply(this,args);
+		}else{
+			console.log("The promise was rejected fallback will fire");
+			this.promises.resolved = true;
+			return this.fallbacks[i](value);
+
+		}
 		}else{
 		var err = new Error("defer.js: defered_list_cb callback returned a wrong value", arguments.callee.caller.toString());
 		var args = this.defered_list_eb_args[i];
