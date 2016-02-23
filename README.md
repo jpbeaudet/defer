@@ -4,7 +4,7 @@
 ### install: (not packaged yet. Coming very soon !)
     npm defer
 ### sample usage:
-##### The difference between chained defers and defered lists is that chain defer wil take the output value of the last callback to the next and defered_lists will take args as argument and will input those args on the callback or errback
+The difference between chained defers and defered lists is that chain defer wil take the output value of the last callback to the next and defered_lists will take args as argument and will input those args on the callback or errback
 #### add callbacks and errback
     var defer = require('./index.js')
     // var defer = require('defer')
@@ -67,6 +67,9 @@
 	    return err;
     }
     //Let's chain our callbacks that must pass its return value to the next one
+    // <defered object>.defered_list_addCallback(callback)
+    // <defered object>.defered_list_addErrback(errback)
+    // will fire in case of a undefined or null value or not function cb or err
     function _main(a){
 		var d = defer.Deferred();
 		var b =2;
@@ -82,6 +85,9 @@
     _main(1);// output 6 12 24 48
 
     //Let's pile our callbacks that must be resolved independently ans will take their own arguments
+    // <defered object>.defered_list_addCallback(callback, [args])
+    // <defered object>.defered_list_addErrback(errback, [args])
+    // will fire in case of a undefined or null value or not function cb or err
     function _main2(a){
 		var dl = defer.defered_list();
 		var b =2;
