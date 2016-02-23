@@ -4,12 +4,100 @@
 // version 1.0.0
 
 module.exports = {
-// *  base constructor that will return the sample defer object
+// add a promise condition that will check the input value of a callback and determine 
+// if it launch the fallback(rejection) callback(success) or errback(err)
+// each promise will be resolved in order of declaration. each test must pass in order to get success (callback)	
+		// params: true/false must be either true or false
+		// params: <int/float >int/float int/float must be greater lower or equal to value
+		// params: =string string must equal exacty the string value or contain the string value
+"addPromise": function(){
+	  for (var i = 0; i < arguments.length; i++) {
+		   console.log(arguments[i]);
+		   // promise is a boolean
+		   if (typeof(arguments[i])=="boolean"){
+			   this.promises.push(arguments[i]);
+			   this.promises.type.push(typeof(arguments[i]));
+			   this.promises.validator = null;
+			   this.promises.resolved = false;
+		   }
+		   // promise is a string that must be contained or must be exactly equal
+		   if (typeof(arguments[i])=="string"){
+			   this.promises.push(arguments[i]);
+			   this.promises.type.push(typeof(arguments[i]));
+			   this.promises.resolved = false;
+			if(arguments[i].startsWith("=")){ 
+			   this.promises.validator = "=";	
+			}else{
+				this.promises.validator = null ; 
+			   }
+		   }		   
+		   // promise is greater or lower than int/float or exactly the equal value		   
+		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" ){
+			   this.promises.push(arguments[i]);
+			   this.promises.type.push(typeof(arguments[i]));
+			   this.promises.resolved = false;
+			if(arguments[i].startsWith("<")){ 
+			   this.promises.validator = "<";	
+			}else{
+				this.promises.validator = ">"; 
+			   }			   
+		   }		   
+		   		   
+		  }	
+},
+/// on promise rejection
+"addFallback":function(_fb){
+	if(typeof(_fb)== "function"){
+		this.fallbacks.push(_cb);
+		var len = this.fallbacks.length;
+		this.fallbacks[len -1].resolved= false;
+		return true;
+		}else{
+			var err = new Error("defer.js: defered fallback is not a function", arguments.callee.caller.toString());
+			console.log(err);	
+			return err;
+		}		
+},
+// resolve promise will rsolve the promise condition and return either true/false 
+// if true then the callback fire 
+// if false then the falback fire 
+// if err the errback fires
+"resolvePromise": function(value){
+	  for (var i = 0; i < this.promises.length; i++) {
+		   // promise is a boolean
+		   if (this.promises.type[i] == "boolean"){
+           if(this.promises[i] == true){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+		   }
+		   // promise is a string that must be contained or must be exactly equal
+		   if (this.promises.type[i] == "string"){
+			   if (this.promises.validator[i] == "="){
+				   if (value === this.promises[i]){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+			   }else{
+				   var res = value.match(this.promises[i]);
+				   if (res.length>0){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+			   }
+		   }		   
+		   // promise is greater or lower than int/float or exactly the equal value		   
+		   if (this.promises.type[i] == "int" || this.promises.type[i] =="float" ){
+			   if (this.promises.validator[i] == "<"){
+				   if ( this.promises[i] < value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+			   }else if(this.promises.validator[i] == ">"){
+				   if ( this.promises[i] > value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+			   }else{
+				   if ( this.promises[i] == value){this.promises.resolved[i] = true;}else{this.promises.resolved[i] = false; return false;};
+			   }			   
+		   }		   
+		  
+	  }
+},
+//*  base constructor that will return the sample defer object
 "Deferred": function(){
 	this.callbacks=[];
 	this.errbacks= [] ;
 	this.defered_list_cb= [] ;
 	this.defered_list_eb= [] ;
+	this.promises=[];
+	this.fallbacks =[];
 	return this;
 },
 //* add callback to defer object
@@ -44,6 +132,7 @@ module.exports = {
 	if (value && value != undefined && value != null){
 		//console.log("callbacks = " +this.callbacks);
 		for (var i = 0; i < this.callbacks.length; i++) {
+			
 			//console.log("callbacks nb "+ i+" "+this.callbacks[i]);
 			//console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved);
 			if(this.callbacks[i].resolved != true && i <  this.callbacks.length){
@@ -79,6 +168,8 @@ module.exports = {
 	this.defered_list_eb= [] ;
 	this.defered_list_cb_args=[];
 	this.defered_list_eb_args=[];
+	this.promises=[];
+	this.fallbacks =[];
 	return this;	
 },
 // defered_list add callback
