@@ -66,3 +66,79 @@ describe('#defered_lists', function() {
 			_main(2);
 		});
 	});
+describe('#promises', function() {
+	 it('addPromise;', function() {
+		 function _cb (value){return "hello";}
+		 function _fb (value){return "Bye";}
+		 var d = defer.Deferred();
+			d.addCallback(_cb);
+			d.addFallback(_fb);
+			d.addPromise("hello");
+			d.promises_type[0].should.equal("string");
+			(d.promises.length).should.equal(1);
+	 });
+	 it('addFallbacks;', function() {
+		 function _cb (value){return "hello";}
+		 function _fb (value){return "Bye";}
+		 var d = defer.Deferred();
+			d.addCallback(_cb);
+			d.addFallback(_fb);
+			(d.fallbacks.length).should.equal(1);
+			d.fallbacks[0].should.equal(_fb);
+	 });
+	 it('resolvePromises and fallbacks on deferred;', function() {
+		 function _cb (value){value.should.equal("hello"); }
+		 function _fb (value){value.should.equal("bye");}
+		 function _eb (value){return "Ouch!";}
+		//testing callbacks on promises success
+		 function _main(a){  
+		 var ret = a;
+		 var d = defer.Deferred();
+		 d.addCallback(_cb);
+		 d.addFallback(_fb);
+		 d.addPromise("hello");
+		 d.addErrback(_eb);
+		 d.returnValue(ret);
+		 }
+		_main("hello");
+		//testing fallbacks on promises rejection
+		  function _main2(a){ 
+				 
+			var ret = a;
+			var d = defer.Deferred();
+		    d.addCallback(_cb);
+			d.addFallback(_fb);
+			d.addPromise("hello");
+			d.addErrback(_eb);
+			d.returnValue(ret);
+			}
+			_main2("bye");
+	 });
+	 it('resolvePromises and fallbacks on deferred_list;', function() {
+		 function _cb (value){value.should.equal("hello"); }
+		 function _fb (value){value.should.equal("bye");}
+		 function _eb (value){return "Ouch!";}
+		//testing callbacks on promises success
+		 function _main(a){  
+		 var ret = a;
+		 var dl = defer.defered_list();
+		 dl.defered_list_addCallback(_cb);
+		 dl.addFallback(_fb);
+		 dl.addPromise("hello");
+		 dl.defered_list_addErrback(_eb);
+		 dl.returnValue(ret);
+		 }
+		_main("hello");
+		//testing fallbacks on promises rejection
+		 function _main2(a){  
+			 var ret = a;
+			 var dl = defer.defered_list();
+			 dl.defered_list_addCallback(_cb);
+			 dl.addFallback(_fb);
+			 dl.addPromise("hello");
+			 dl.defered_list_addErrback(_eb);
+			 dl.returnValue(ret);
+			 }
+			_main2("bye");
+	 });
+	});

@@ -43,9 +43,7 @@ module.exports = {
 		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" || typeof(arguments[i])=="number" ){
 			   this.promises.push(arguments[i]);
 			   this.promises_type.push(typeof(arguments[i]));
-			   this.promises.resolved = false;
-		   
-		   		   
+			   this.promises.resolved = false;  		   
 		  }	
 },
 /// on promise rejection

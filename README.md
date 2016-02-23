@@ -38,6 +38,11 @@ The difference between chained defers and defered lists is that chain defer wil 
 	    console.log("ret1: "+ ret);
 	    return ret;
     }
+    function _fb(value){
+	var ret = value +1;
+	console.log("ret fb: "+ ret);
+	return ret;
+    }
     function _cb222(value, value2){
 	    var ret = value *2+value2;
 	    console.log("ret222: "+ ret);
@@ -101,6 +106,19 @@ The difference between chained defers and defered lists is that chain defer wil 
 		dl.defered_list_returnValue(ret);
 	}
 	_main2(1);// output 4 2 2 2
+    //Let's use callbacks and fallbacks and errbacks in the same logic
+    function _main3(a){
+	console.log("Starting main3 example function");		
+	var d = defer.Deferred();
+	var b =2;
+	var ret = a+b;
+	d.addCallback(_cb);
+	d.addFallback(_fb);
+	d.addPromise("<6");
+	d.addErrback(_eb);
+	d.returnValue(ret);
+	}
+    _main3(1);// output promise has succeded value (1+2) was lower than 6 and then it fired_fb that added 1 = output 4
 #### Tests:
 ##### Install mocha globally to use it from terminal
     npm install mocha -g
