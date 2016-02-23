@@ -13,34 +13,36 @@ module.exports = {
 "addPromise": function(){
 	  for (var i = 0; i < arguments.length; i++) {
 		   console.log(arguments[i]);
+		   console.log("addPromises got: "+typeof(arguments[i]));
 		   // promise is a boolean
 		   if (typeof(arguments[i])=="boolean"){
 			   this.promises.push(arguments[i]);
-			   this.promises.type.push(typeof(arguments[i]));
-			   this.promises.validator = null;
+			   this.promises_type.push(typeof(arguments[i]));
+			   this.promises_validator = "";
 			   this.promises.resolved = false;
 		   }
 		   // promise is a string that must be contained or must be exactly equal
 		   if (typeof(arguments[i])=="string"){
 			   this.promises.push(arguments[i]);
-			   this.promises.type.push(typeof(arguments[i]));
+			   this.promises_type.push(typeof(arguments[i]));
 			   this.promises.resolved = false;
 			if(arguments[i].startsWith("=")){ 
-			   this.promises.validator = "=";	
+			   this.promises_validator = "=";	
 			}else{
-				this.promises.validator = null ; 
+				this.promises_validator = "" ; 
 			   }
 		   }		   
 		   // promise is greater or lower than int/float or exactly the equal value		   
-		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" ){
+		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" || typeof(arguments[i])=="number" ){
 			   this.promises.push(arguments[i]);
-			   this.promises.type.push(typeof(arguments[i]));
+			   this.promises_type.push(typeof(arguments[i]));
 			   this.promises.resolved = false;
-			if(arguments[i].startsWith("<")){ 
-			   this.promises.validator = "<";	
-			}else{
-				this.promises.validator = ">"; 
-			   }			   
+			   var str_arg = arguments[i].toString() ;
+			if(str_arg.startsWith("<")){ 
+			   this.promises_validator = "<";	
+			}else if(str_arg.startsWith(">")){
+				this.promises_validator = ">"; 
+			   }else{this.promises_validator = "="; }			   
 		   }		   
 		   		   
 		  }	
@@ -48,7 +50,7 @@ module.exports = {
 /// on promise rejection
 "addFallback":function(_fb){
 	if(typeof(_fb)== "function"){
-		this.fallbacks.push(_cb);
+		this.fallbacks.push(_fb);
 		var len = this.fallbacks.length;
 		this.fallbacks[len -1].resolved= false;
 		return true;
@@ -67,23 +69,26 @@ module.exports = {
 	  for (var i = 0; i < this.promises.length; i++) {
 
 		   // promise is a boolean
-		   if (this.promises.type[i] == "boolean"){
+		   if (this.promises_type[i] == "boolean"){
            if(this.promises[i] == true){this.promises.resolved[i] = true; this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 		   }
 		   // promise is a string that must be contained or must be exactly equal
-		   if (this.promises.type[i] == "string"){
-			   if (this.promises.validator[i] == "="){
+		   if (typeof(this.promises[i]) == "string"){
+			   console.log("validator = "+ this.promises_validator)
+			   if (this.promises_validator[i] == "="){
 				   if (value === this.promises[i]){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else{
-				   var res = value.match(this.promises[i]);
-				   if (res.length>0){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; rthis.promises.success = false;};
+				   var str = value.toString();
+				   console.log(typeof(str))
+				   var res = str.search(this.promises[i]);
+				   if (res.length>0){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }
 		   }		   
 		   // promise is greater or lower than int/float or exactly the equal value		   
-		   if (this.promises.type[i] == "int" || this.promises.type[i] =="float" ){
-			   if (this.promises.validator[i] == "<"){
+		   if (this.promises_type[i] == "int" || this.promises_type[i] =="float" ||  typeof(arguments[i])=="number" ){
+			   if (this.promises_validator[i] == "<"){
 				   if ( this.promises[i] < value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
-			   }else if(this.promises.validator[i] == ">"){
+			   }else if(this.promises_validator[i] == ">"){
 				   if ( this.promises[i] > value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
 			   }else{
 				   if ( this.promises[i] == value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
@@ -101,6 +106,8 @@ module.exports = {
 	this.defered_list_cb= [] ;
 	this.defered_list_eb= [] ;
 	this.promises=[];
+	this.promises_type=[];
+	this.promises_validator=[];
 	this.fallbacks =[];
 	return this;
 },
@@ -137,9 +144,8 @@ module.exports = {
 		//console.log("callbacks = " +this.callbacks);
 		for (var i = 0; i < this.callbacks.length; i++) {
 			var ok = false;
-			console.log("promise length ="+ this.promises.length)
 			if(this.promises.length != 0){ok = this.resolvePromise(value);console.log("The promise was accepted callback will fire");}else{
-				ok = true; console.log("No promises was called");}			
+				ok = true;}			
 			if(ok){ 
 			
 			//console.log("callbacks nb "+ i+" "+this.callbacks[i]);
@@ -184,6 +190,8 @@ module.exports = {
 	this.defered_list_cb_args=[];
 	this.defered_list_eb_args=[];
 	this.promises=[];
+	this.promises_type=[];
+	this.promises_validator=[];
 	this.fallbacks =[];
 	return this;	
 },
@@ -224,11 +232,10 @@ module.exports = {
 		//console.log("defered_list_cb[i]  = "+i+" "+this.defered_list_cb[i] )
 		if (value && value != undefined && value != null){
 		var ok = false;
-		console.log("promise length ="+ this.promises.length)
 		if(this.promises.length != 0){ok = this.resolvePromise(value);
 		console.log("The promise was accepted callback will fire");
 		}else{
-			ok = true; console.log("No promises was called");}			
+			ok = true; }			
 		if(ok){ 
 		var args = this.defered_list_cb_args[i];
 		//this.defered_list_cb[i](args[0]);
