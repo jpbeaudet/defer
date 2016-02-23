@@ -1,11 +1,11 @@
 # Defer.js
 ### A very ligthweigth twisted.web type implementation for node.js for full async progamming
 
-### install: (not packaged yet. Coming very soon !)
+#### install: (not packaged yet. Coming very soon !)
     npm defer
-### sample usage:
+#### sample usage:
 The difference between chained defers and defered lists is that chain defer wil take the output value of the last callback to the next and defered_lists will take args as argument and will input those args on the callback or errback
-#### add callbacks and errback
+##### add callbacks and errback
     var defer = require('./index.js')
     // var defer = require('defer')
     function _cb(value){
@@ -29,7 +29,7 @@ The difference between chained defers and defered lists is that chain defer wil 
     _main(1);
     >> Will output 6 and 12
 
-#### add defered_list callbacks and errbacks
+####% add defered_list callbacks and errbacks
     var defer = require("./index.js");
     // var defer =  require('defer');
     

@@ -84,4 +84,4 @@ function _main3(a){
 	d.addErrback(_eb);
 	d.returnValue(ret);
 	}
-_main3(1);// output false retfb 4
+_main3(1);// output promise has succeded value (1+2) was lower than 6 and then it fired_fb that added 1 = output 4

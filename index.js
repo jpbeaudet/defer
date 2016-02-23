@@ -181,7 +181,13 @@ module.exports = {
 		}else{
 			console.log("The promise was rejected fallback will fire");
 			this.promises.resolved = true;
-			return this.fallbacks[i](value);
+			if(this.fallbacks[i] != null || this.fallbacks[i] != undefined){return this.fallbacks[i](value);
+			}else{
+				var err = new Error("defer.js promise rejected: No fallbacks were provided", arguments.callee.caller.toString());
+				console.log(err);
+				return err;
+			}
+			
 
 		}
 		}
