@@ -35,8 +35,8 @@ function _eb2(err, value){
 	console.log("err : "+ err);
 	return err;
 }
+//Let's chain our callbacks that must pass its return value to the next one
 function _main(a){
-	
 var d = defer.Deferred();
 var b =2;
 var ret = a+b;
@@ -48,7 +48,9 @@ d.addErrback(_eb);
 d.addErrback(_eb2);
 d.returnValue(ret);
 }
-_main(1);
+_main(1);// output 6 12 24 48
+
+//Let's pile our callbacks that must be resolved independently ans will take their own arguments
 function _main2(a){
 	
 	var dl = defer.defered_list();
@@ -62,4 +64,4 @@ function _main2(a){
 	dl.defered_list_addErrback(_eb2, [1]);
 	dl.defered_list_returnValue(ret);
 	}
-_main2(1);
+_main2(1);// output 4 2 2 2

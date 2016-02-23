@@ -22,16 +22,23 @@
     var b =2;
     var ret = a+b;
     d.addCallback(_cb);
+    d.addCallback(_cb);
     d.addErrback(_eb);
     d.returnValue(ret);
     }
     _main(1);
+    >> Will output 6 and 12
 
 #### add defered_list callbacks and errbacks
     var defer = require('./index.js')
     // var defer = require('defer')
     function _cb(value){
 	var ret = value *2;
+	console.log("ret1: "+ ret);
+	return ret;
+    }
+    function _cb2(value1, value2){
+	var ret = value1 * value2;
 	console.log("ret1: "+ ret);
 	return ret;
     }
@@ -43,15 +50,15 @@
 	var dl = defer.defered_list();
 	var b =2;
 	var ret = a+b;
-	dl.defered_list_addCallback(_cb222, [1,2]);
-	dl.defered_list_addCallback(_cb2 , [1]);
-	dl.defered_list_addCallback(_cb3, [1]);
-	dl.defered_list_addCallback(_cb4, [1]);
+	dl.defered_list_addCallback(_cb, [1]);
+	dl.defered_list_addCallback(_cb2 , [1,2]);
+
 	dl.defered_list_addErrback(_eb, [1]);
 	dl.defered_list_addErrback(_eb2, [1]);
 	dl.defered_list_returnValue(ret);
 	}
     _main2(1);
+    >> Will output 2 and 2 
 #### declare your callbacks and errback and then add it to either a defered_list (defer.defered_list_cb_addCallback) or a chain defer (defer.adCallback)
     var defer = require('./index.js')
     // var defer = require('defer')
