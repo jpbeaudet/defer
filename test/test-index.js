@@ -73,7 +73,7 @@ describe('#promises', function() {
 		 var d = defer.Deferred();
 			d.addCallback(_cb);
 			d.addFallback(_fb);
-			d.addPromise("hello");
+			d.addPromise(["=","hello"]);
 			d.promises_type[0].should.equal("string");
 			(d.promises.length).should.equal(1);
 	 });
@@ -96,7 +96,7 @@ describe('#promises', function() {
 		 var d = defer.Deferred();
 		 d.addCallback(_cb);
 		 d.addFallback(_fb);
-		 d.addPromise("hello");
+		 d.addPromise(["=","hello"]);
 		 d.addErrback(_eb);
 		 d.returnValue(ret);
 		 }
@@ -108,7 +108,7 @@ describe('#promises', function() {
 			var d = defer.Deferred();
 		    d.addCallback(_cb);
 			d.addFallback(_fb);
-			d.addPromise("hello");
+			d.addPromise(["=","hello"]);
 			d.addErrback(_eb);
 			d.returnValue(ret);
 			}
@@ -124,7 +124,7 @@ describe('#promises', function() {
 		 var dl = defer.defered_list();
 		 dl.defered_list_addCallback(_cb);
 		 dl.addFallback(_fb);
-		 dl.addPromise("hello");
+		 dl.addPromise(["=","hello"]);
 		 dl.defered_list_addErrback(_eb);
 		 dl.returnValue(ret);
 		 }
@@ -135,7 +135,7 @@ describe('#promises', function() {
 			 var dl = defer.defered_list();
 			 dl.defered_list_addCallback(_cb);
 			 dl.addFallback(_fb);
-			 dl.addPromise("hello");
+			 dl.addPromise(["=","hello"]);
 			 dl.defered_list_addErrback(_eb);
 			 dl.returnValue(ret);
 			 }

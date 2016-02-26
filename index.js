@@ -12,39 +12,61 @@ module.exports = {
 		// params: =string string must equal exacty the string value or contain the string value
 "addPromise": function(){
 	  for (var i = 0; i < arguments.length; i++) {
+		   if (arguments[i][0] != undefined && arguments[i][0] != null ){ 
 		   console.log(arguments[i]);
-		   console.log("addPromises got: "+typeof(arguments[i]));
-		   // promise is a boolean
-		   if (typeof(arguments[i])=="boolean"){
-			   this.promises.push(arguments[i]);
-			   this.promises_type.push(typeof(arguments[i]));
-			   this.promises_validator = "";
-			   this.promises.resolved = false;
+		   console.log("addPromises got: "+typeof(arguments[i][1]));
+		   
+		   // add operator and verufy that it is valid
+		   var operator = arguments[i][0];
+		   switch(operator) {
+		    // is equal to
+		    case "=":
+				this.promises_validator.push(operator);
+		        break;
+			// is not equal to
+		    case "!=":
+				this.promises_validator.push(operator);
+		        break;
+		    // is lower than    
+		    case "<":
+				this.promises_validator.push(operator);
+		        break;
+		    // is not lower than
+		    case "!<":
+				this.promises_validator.push(operator);
+		        break;
+		    // is greater then
+		    case ">":
+				this.promises_validator.push(operator);
+		        break;
+		    // is not greater than
+		    case "!>":
+				this.promises_validator.push(operator);
+		        break;
+		    // is type
+		    case "?":
+				this.promises_validator.push(operator);
+		        break;
+		    // is not type
+		    case "!?":
+				this.promises_validator.push(operator);
+		        break;
+		    default:
+				var err = new Error("defer.js: addPromises argument first value must be a valid operator : ", operator);
+				console.log(err);	
+				return err;
 		   }
-		   // promise is a string that must be contained or must be exactly equal
-		   if (typeof(arguments[i])=="string"){
-			   this.promises.push(arguments[i]);
-			   this.promises_type.push(typeof(arguments[i]));
-			   this.promises.resolved = false;
-			if(arguments[i].startsWith("=")){ 
-			   this.promises_validator = "=";	
-			}else{
-				this.promises_validator = "" ; 
-			   }
-		   			
-			if(arguments[i].startsWith("<")){ 
-				   this.promises_validator = "<";	
-				}else if(arguments[i].startsWith(">")){
-					this.promises_validator = ">"; 
-				   }else{this.promises_validator = "="; }			   
-			   }
-		   }		   
-		   // promise is greater or lower than int/float or exactly the equal value		   
-		   if (typeof(arguments[i])=="int" || typeof(arguments[i])=="float" || typeof(arguments[i])=="number" ){
-			   this.promises.push(arguments[i]);
-			   this.promises_type.push(typeof(arguments[i]));
-			   this.promises.resolved = false;  		   
-		  }	
+		   // add value
+		   this.promises.push(arguments[i][1]);	
+		   this.promises_resolved.push(false);
+		   // add type
+		   this.promises_type.push(typeof(arguments[i][1]));
+		   }else{
+				var err = new Error("defer.js: Each addPromises argument must be an array [operator, value]", arguments.callee.caller.toString());
+				console.log(err);	
+				return err;			   
+		   }
+	  }  
 },
 /// on promise rejection
 "addFallback":function(_fb){
@@ -69,44 +91,44 @@ module.exports = {
 
 		   // promise is a boolean
 		   if (this.promises_type[i] == "boolean"){
-           if(this.promises[i] == true){this.promises.resolved[i] = true; this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+           if(this.promises[i] == true){this.promises_resolved[i] = true; this.promises.success = true;}else{this.promises_resolved[i] = false; success = false;};
 		   }
 		   // promise is a string that must be contained or must be exactly equal
 		   if (typeof(this.promises[i]) == "string"){
-			   console.log("validator = "+ this.promises_validator)
+			   console.log("validator = "+ this.promises_validator[i]);
 			   if (this.promises_validator[i] == "="){
-				   if (value === this.promises[i]){this.promises.resolved[i] = true;success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+				   if (value === this.promises[i]){this.promises_resolved[i] = true;success = true;}else{this.promises_resolved[i] = false; success = false;};
 			   }else{
 				   var str = value.toString();
-				   console.log(typeof(str))
+				   console.log(typeof(str));
 				   var res = str.search(this.promises[i]);
-				   if (res.length>0){this.promises.resolved[i] = true;success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+				   if (res.length>0){this.promises_resolved[i] = true;success = true;}else{this.promises_resolved[i] = false; success = false;};
 			   }
 		   }	
 		  if (this.promises_validator[i] == "<"){
-			  console.log("value = "+value+ " is type: "+typeof(value))
+			  console.log("value = "+value+ " is type: "+typeof(value));
               var comparator = Number(this.promises[i].slice(1));
 		   if (value  < comparator){
 			   console.log(comparator+" < value Success");			   
-			   this.promises.resolved[i] = true;success = true;
+			   this.promises_resolved[i] = true;success = true;
 			   }else{
 				console.log(comparator +" < value Fail"); 
-				this.promises.resolved[i] = false; success = false;};
+				this.promises_resolved[i] = false; success = false;};
 		  }else if(
 				  
 			  this.promises_validator[i] == ">"){
-			  console.log("value = "+value+ " is type: "+typeof(value))
+			  console.log("value = "+value+ " is type: "+typeof(value));
               var comparator = Number(this.promises[i].slice(1));
 		   if ( value > comparator){
 			   console.log(comparator +" > value Success");
-			   this.promises.resolved[i] = true;success = true;
+			   this.promises_resolved[i] = true;success = true;
 			   }else{
 					console.log(comparator +" > value Fail"); 
-			this.promises.resolved[i] = false; success = false;};
+			this.promises_resolved[i] = false; success = false;};
 		  }
 			   // promise is greater or lower than int/float or exactly the equal value		   
 		   if (this.promises_type[i] == "int" || this.promises_type[i] =="float" ||  typeof(arguments[i])=="number" ){
-		   if ( this.promises[i] == value){this.promises.resolved[i] = true;this.promises.success = true;}else{this.promises.resolved[i] = false; this.promises.success = false;};
+		   if ( this.promises[i] == value){this.promises_resolved[i] = true;success = true;}else{this.promises_resolved[i] = false; success = false;};
 			  			   
 		   }		   
 		  if(i == (this.promises.length-1)){
@@ -125,6 +147,7 @@ module.exports = {
 	this.promises_type=[];
 	this.promises_validator=[];
 	this.fallbacks =[];
+	this.promises_resolved = [];
 	return this;
 },
 //* add callback to defer object
@@ -214,6 +237,7 @@ module.exports = {
 	this.promises=[];
 	this.promises_type=[];
 	this.promises_validator=[];
+	this.promises_resolved = [];
 	this.fallbacks =[];
 	return this;	
 },

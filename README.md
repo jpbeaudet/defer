@@ -29,6 +29,9 @@ The difference between chained defers and defered lists is that chain defer wil 
     _main(1);
     >> Will output 6 and 12
 ##### add promises and cuse fallback on rejection
+Promises will compare the output value of a callback returning a boolean. If the condition is true the promise will fire next callback if not it will fire the fallback.
+Syntax: addPromise([<operator>, <value>],[<operator>, <value>] )
+Note that multiple argument array will pass each condition in turn and will fire callback only if all returned true. 
     //Let's use callbacks and fallbacks and errbacks in the same logic
     function _main3(a){
     function _cb(value){
@@ -51,7 +54,7 @@ The difference between chained defers and defered lists is that chain defer wil 
     var ret = a+b;
     d.addCallback(_cb);
     d.addFallback(_fb);
-    d.addPromise("<6");
+    d.addPromise(["<","6"]);
     d.addErrback(_eb);
     d.returnValue(ret);
     }
@@ -142,7 +145,7 @@ The difference between chained defers and defered lists is that chain defer wil 
 	var ret = a+b;
 	d.addCallback(_cb);
 	d.addFallback(_fb);
-	d.addPromise("<6");
+	d.addPromise(["<","6"]);
 	d.addErrback(_eb);
 	d.returnValue(ret);
 	}
