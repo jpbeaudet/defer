@@ -251,7 +251,9 @@ module.exports = {
 			success = true;  
 		}else{success = false;};
 			if(i == (this.promises.length-1)){
-			if(success == true){return true;}else{return false;}
+			if(success == true){ this.promises_resolved[i] = true; 
+			return true;}else{this.promises_resolved[i] = true; 
+			return false;}
 			}
 	}
 },
@@ -319,7 +321,6 @@ module.exports = {
 			}
 		}else{
 			console.log("The promise was rejected fallback will fire");
-			this.promises.resolved = true;
 			if(this.fallbacks[i] != null || this.fallbacks[i] != undefined){return this.fallbacks[i](value);
 			}else{
 				var err = new Error("defer.js promise rejected: No fallbacks were provided", arguments.callee.caller.toString());
