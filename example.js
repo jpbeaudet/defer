@@ -80,7 +80,7 @@ function _main3(a){
 	var ret = a+b;
 	d.addCallback(_cb);
 	d.addFallback(_fb);
-	d.addPromise(["<","6"]);
+	d.addPromise(["<",6]);
 	d.addErrback(_eb);
 	d.returnValue(ret);
 	}

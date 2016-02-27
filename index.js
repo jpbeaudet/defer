@@ -122,53 +122,53 @@ module.exports = {
 		    return success;
 		// is not equal to
 		case "!=":
-			success = this.Validator.equal_to(false, comparator, value);
+			success = this.equal_to(false, comparator, value);
 		    return success;
 		// is lower than    
 		case "<":
-			success = this.Validator.lower_than(true, comparator, value);
+			success = this.lower_than(true, comparator, value);
 		    return success;
 			// is  lower or equal than
 	    case "<=":
-	    	success = this.Validator.lower_or_equal(true, comparator, value);
+	    	success = this.lower_or_equal(true, comparator, value);
 	        return success;
 		// is not lower than
 		case "!<":
-			success = this.Validator.lower_than(false, comparator, value);
+			success = this.lower_than(false, comparator, value);
 		    return success;
 		// is greater then
 		case ">":
-			success = this.Validator.greater_than(true, comparator, value);
+			success = this.greater_than(true, comparator, value);
 			return success;
 		// is not greater than
 		case "!>":
-			success = this.Validator.greater_than(false, comparator, value);
+			success = this.greater_than(false, comparator, value);
 		    return success;
 		// is greater or equal than
 	    case ">=":
-	    	success = this.Validator.greater_or_equal(true, comparator, value);
+	    	success = this.greater_or_equal(true, comparator, value);
 	        return success;
 		// is type
 		case "?":
-			success = this.Validator.is_type(true, comparator, value);
+			success = this.is_type(true, comparator, value);
 		   return success;
 		// is not type
 		case "!?":
-			success = this.Validator.is_type(false, comparator, value);
+			success = this.is_type(false, comparator, value);
 		    return success;
 			// is in
 		case "*":
-			success = this.Validator.is_in(true, comparator, value);
+			success = this.is_in(true, comparator, value);
 		    return success;
 		    // is not in
 		case "!*":
-			success = this.Validator.is_in(false, comparator, value);
+			success = this.is_in(false, comparator, value);
 		    return success
 		case true:
-			success = this.Validator.is(true, comparator, value);
+			success = this.is(true, comparator, value);
 		    return success;
 		case false:
-			success = this.Validator.is(false, comparator, value);
+			success = this.is(false, comparator, value);
 		    return success;
 		default:
 			var err = new Error("defer.js: Promises Validatior argument first value must be a valid operator : ", operator);
