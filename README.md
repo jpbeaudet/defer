@@ -28,7 +28,7 @@ The difference between chained defers and defered lists is that chain defer wil 
     }
     _main(1);
     >> Will output 6 and 12
-##### add promises and cuse fallback on rejection
+##### add promises and use fallback on rejection
     //Promises will compare the output value of a callback returning a boolean. If the condition is true the promise will fire next callback if not it will fire the fallback.
     //Syntax: addPromise([<operator>, <value>],[<operator>, <value>] )
     //Note that multiple argument array will pass each condition in turn and will fire callback only if all returned true. 
