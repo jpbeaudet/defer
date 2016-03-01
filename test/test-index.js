@@ -142,3 +142,75 @@ describe('#promises', function() {
 			_main2("bye");
 	 });
 	});
+
+describe('#promises logical operator', function() {
+
+	 //it('addPromises_args;', function() {
+
+	 //});	 
+	 it('equal_to;', function() {
+		 function _cb (value){value.should.equal("hello"); }
+		 function _fb (value){value.should.equal("bye");}
+		 function _eb (value){return "Ouch!";}
+		 function _main(a){  
+			 var ret = a;
+			 var dl = defer.defered_list();
+			 dl.defered_list_addCallback(_cb);
+			 dl.addFallback(_fb);
+			 dl.addPromise(["=","hello"]);
+			 dl.defered_list_addErrback(_eb);
+			 dl.returnValue(ret);
+			 }
+			_main("hello");
+		//testing fallbacks on promises rejection
+		function _main2(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["=","hello"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+		    _main2("bye");
+	 });
+	 it('not_equal_to;', function() {
+		 function _cb (value){value.should.equal("bye"); }
+		 function _fb (value){value.should.equal("hello");}
+		 function _eb (value){return "Ouch!";}
+		 function _main(a){  
+			 var ret = a;
+			 var dl = defer.defered_list();
+			 dl.defered_list_addCallback(_cb);
+			 dl.addFallback(_fb);
+			 dl.addPromise(["!=","hello"]);
+			 dl.defered_list_addErrback(_eb);
+			 dl.returnValue(ret);
+			 }
+			_main("hello");
+		//testing fallbacks on promises rejection
+		function _main2(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["!=","hello"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+			_main2("bye");
+	 });
+
+	 it('greater_than;', function() {
+
+	 });
+	 it('not_greater_than;', function() {
+
+	 });
+	 it('lower_than;', function() {
+
+	 });
+	 it('not_lower_than;', function() {
+
+	 });
+});
