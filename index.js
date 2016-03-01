@@ -4,6 +4,7 @@
 // version 1.0.0
 
 module.exports = {
+
 // add a promise condition that will check the input value of a callback and determine 
 // if it launch the fallback(rejection) callback(success) or errback(err)
 // each promise will be resolved in order of declaration. each test must pass in order to get success (callback)	
@@ -268,6 +269,8 @@ module.exports = {
 	this.promises_validator=[];
 	this.fallbacks =[];
 	this.promises_resolved = [];
+	this.callbacks_resolved = [];
+	this.errbacks_resolved = [];
 	return this;
 },
 //* add callback to defer object
@@ -275,7 +278,7 @@ module.exports = {
 	if(typeof(_cb)== "function"){
 	this.callbacks.push(_cb);
 	var len = this.callbacks.length;
-	this.callbacks[len -1].resolved= false;
+	this.callbacks_resolved[len -1]= false;
 	return true;
 	}else{
 		var err = new Error("defer.js: defered callback is not a function", arguments.callee.caller.toString());
@@ -288,7 +291,7 @@ module.exports = {
 	if(typeof(_eb)== "function"){
 	this.errbacks.push(_eb);
 	var len = this.errbacks.length;
-	this.errbacks[len -1].resolved= false;
+	this.errbacks_resolved[len -1]= false;
 	return true;
 	}else{
 		var err = new Error("defer.js: defered errback is not a function", arguments.callee.caller.toString());
@@ -309,9 +312,9 @@ module.exports = {
 			
 			//console.log("callbacks nb "+ i+" "+this.callbacks[i]);
 			//console.log("callbacks.resolved nb "+ i+" "+this.callbacks[i].resolved);
-			if(this.callbacks[i].resolved != true && i <  this.callbacks.length){
-				this.callbacks[i].resolved = true;
-				if(this.callbacks[i+1] && this.callbacks[i+1].resolved !=true){
+			if(this.callbacks_resolved[i] != true && i <  this.callbacks.length){
+				this.callbacks_resolved[i] = true;
+				if(this.callbacks[i+1] && this.callbacks_resolved[i+1] !=true){
 				var next = this.callbacks[i](value); 				
 				return this.returnValue(next);
 				}else{
@@ -337,9 +340,9 @@ module.exports = {
 			return this.errbacks[0](err, value);
 		}else{
 		for (x in this.errbacks){
-			if(this.errbacks[x].resolved != true){
+			if(this.errbacks_resolved[x] != true){
 				this.errbacks[x](err, value);
-                this.errbacks[x].resolved = true;
+                this.errbacks_resolved[x] = true;
 				break;
 				}
 				}		
@@ -358,6 +361,8 @@ module.exports = {
 	this.promises_validator=[];
 	this.promises_resolved = [];
 	this.fallbacks =[];
+	this.defered_list_cb_resolved = [];
+	this.defered_list_eb_resolved = [];
 	return this;	
 },
 // defered_list add callback
@@ -368,8 +373,8 @@ module.exports = {
 	this.defered_list_cb_args.push(args);
 	//console.log("defered_list_cb after = "+this.defered_list_cb)
 	var len = this.defered_list_cb.length;
-	this.defered_list_cb[len-1].resolved= false;
-	return true
+	this.defered_list_cb_resolved[len-1]= false;
+	return true;
 	}else{
 		var err = new Error("defer.js: defered_list callback is not a function", arguments.callee.caller.toString());
 		console.log(err);	
@@ -382,7 +387,7 @@ module.exports = {
 	this.defered_list_eb.push(_eb);
 	this.defered_list_eb_args.push(args);
 	var len = this.defered_list_eb.length;
-	this.defered_list_eb[len -1].resolved= false;
+	this.defered_list_eb_resolved[len -1]= false;
 	return true;
 	}else{
 		var err = new Error("defer.js: defered_list errback is not a function", arguments.callee.caller.toString());
@@ -407,7 +412,7 @@ module.exports = {
 		this.defered_list_cb[i].apply(this,args);
 		}else{
 			console.log("The promise was rejected fallback will fire");
-			this.promises.resolved = true;
+			this.promises_resolved = true;
 			return this.fallbacks[i](value);
 
 		}
