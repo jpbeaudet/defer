@@ -654,7 +654,7 @@ describe('#promises logical operator', function() {
 			_main33(false);	
 	 });
 });
-describe('#promises multiple args', function() {
+describe('#promises multiple args and chained promises', function() {
 	 
 	 it('promises multiple args deferred();', function() {
 		 function _cb (value){value.should.equal(true); }
@@ -715,18 +715,18 @@ describe('#promises multiple args', function() {
 		 function _eb (value){return "Ouch!";}
 		//testing callbacks on promises success for deferred()
 		 function _main(a){  
-		 var ret = a;
-		 var d = defer.Deferred();
-		 d.addCallback(_cb);
-		 d.addFallback(_fb);
-		 d.addPromise(["is",true]);
-		 d.addPromise(["?","boolean"]);
-		 d.addErrback(_eb);
-		 d.returnValue(ret);
+			 var ret = a;
+			 var d = defer.Deferred();
+			 d.addCallback(_cb);
+			 d.addFallback(_fb);
+			 d.addPromise(["is",true]);
+			 d.addPromise(["?","boolean"]);
+			 d.addErrback(_eb);
+			 d.returnValue(ret);
 		 }
-		_main(true);
+		 _main(true);
 		//testing fallbacks on promises rejection for deferred()
-		  function _main2(a){ 				 
+		function _main2(a){ 				 
 			var ret = a;
 			var d = defer.Deferred();
 		    d.addCallback(_cb);
@@ -769,5 +769,63 @@ describe('#promises multiple args', function() {
 			_main33(false);		 
 	 });
 
+});
+describe('#nested deferred objects with/without promises', function() {	 
+	 it('nested deferred() objects with promises;', function() {
+		 function start_routine(a){
+				var ret = a;
+				var dl = defer.defered_list();
+				dl.addCallback(subroutine1(1));
+				dl.addCallback(subroutine2(1));
+				dl.defered_list_addErrback(_eb);
+				dl.returnValue(ret);				
+		 }
+		 
+		 
+		 function _finally (value){value.should.equal(3); return value;} // finally do (will be replaced by .done)
+		 function _action (value){value = value+1; return value;}// add +1 to value
+		 function _fb (value){return subroutine1(value);}// recursive call if value was rejected
+		 function _eb (value){return "Ouch!";}// should not fire. Should ideally be a 
+		 //err object declaration with useful message or fire corrective or alternative scripts
+		 function deferred_cb (value){ // defferred object used to check promise on first chain opf callback result
+			 // will fire either _fb a recursive call on itself(that wil in turn fire _action)
+			 // or will pass the value to finallly
+			    var ret = value;
+				var d = defer.Deferred();
+				d.addPromise([">",2]);
+				d.addFallback(_fb);
+				d.addCallback(_finally);
+				d.returnValue(ret);
+			 }
+		 function subroutine1(a){ // deferred object used as subroutine to incree value by +1 and launch the
+			 // deferred checkup on results
+			var ret = a;
+			var routine = defer.Deferred();
+			routine.addCallback(_action);
+			routine.addCallback(deferred_cb);
+			routine.returnValue(ret);
+		 }
+		 function _finally2 (value){value.should.equal(4); return value;}
+		 function _action2 (value){value = value+1; return value;}
+		 function _fb2 (value){return subroutine2(value);}
+		 function _eb2 (value){return "Ouch!";}
+		 function deferred_cb2 (value){
+			    var ret = value;
+				var d = defer.Deferred();
+				d.addPromise([">",3]);
+				d.addFallback(_fb2);
+				d.addCallback(_finally2);
+				d.returnValue(ret);
+			 }
+		 function subroutine2(a){
+			var ret = a;
+			var routine = defer.Deferred();
+			routine.addCallback(_action);
+			routine.addCallback(deferred_cb);
+			routine.returnValue(ret);
+		 }
+		 start_routine(1) ;
+	 });
+	 
 });
 	 
