@@ -38,7 +38,7 @@ module.exports = {
 				this.promises_validator.push(operator);
 		        break;
 			// is  lower or equal than
-		    case "=<":
+		    case "<=":
 				this.promises_validator.push(operator);
 		        break;
 		    // is greater then
@@ -50,7 +50,7 @@ module.exports = {
 				this.promises_validator.push(operator);
 		        break;
 		    // is greater or equal than
-		    case "=>":
+		    case ">=":
 				this.promises_validator.push(operator);
 		        break;
 		    // is type
@@ -69,12 +69,11 @@ module.exports = {
 		    case "!*":
 				this.promises_validator.push(operator);
 		        break;
-			// is true
-		    case true:
+			// is true/false
+		    case "is":
 				this.promises_validator.push(operator);
 		        break;
-			// is false
-		    case true:
+		    case "!is":
 				this.promises_validator.push(operator);
 		        break;
 		    default:
@@ -164,11 +163,12 @@ module.exports = {
 		    // is not in
 		case "!*":
 			success = this.is_in(false, comparator, value);
-		    return success
-		case true:
+		    return success;
+		    // is true/false
+		case "is":
 			success = this.is(true, comparator, value);
 		    return success;
-		case false:
+		case "!is":
 			success = this.is(false, comparator, value);
 		    return success;
 		default:
@@ -184,37 +184,37 @@ module.exports = {
 	},
 	"equal_to": function(is, comparator, value){
 		if(is){
-			if(comparator == value){return true;}else{ return false;}
+			if(value == comparator){return true;}else{ return false;}
 		}else{
-			if(comparator != value){return true;}else{return false;}
+			if(value != comparator){return true;}else{return false;}
 		}
 	},
 	"greater_than": function(is, comparator, value){
 		if(is){
-			if(comparator > value){return true;}else{return false;}
+			if(value > comparator){return true;}else{return false;}
 		}else{
-			if(comparator < value){return true;}else{return false;}
+			if(value < comparator){return true;}else{return false;}
 		}
 	},
 	"greater_or_equal": function(is, comparator, value){
 		if(is){
-			if(comparator >= value){return true;}else{return false;}
+			if(value >= comparator){return true;}else{return false;}
 		}else{
-			if(comparator < value){return true;}else{return false;}
+			if(value < comparator){return true;}else{return false;}
 		}
 	},
 	"lower_than": function(is, comparator, value){
 		if(is){
-			if(comparator < value){return true;}else{return false;}
+			if(value < comparator){return true;}else{return false;}
 		}else{
-			if(comparator > value){return true;}else{return false;}
+			if(value > comparator){return true;}else{return false;}
 		}
 	},
 	"lower_or_equal": function(is, comparator, value){
 		if(is){
-			if(comparator <= value){return true;}else{return false;}
+			if(value <= comparator){return true;}else{return false;}
 		}else{
-			if(comparator > value){return true;}else{return false;}
+			if(value > comparator){return true;}else{return false;}
 		}
 	},
 	"is_type": function(is, comparator, value){
@@ -227,16 +227,16 @@ module.exports = {
 	"is_in": function(is, comparator, value){
 		if(is){
 			
-			if(value.indexOf(comparator) > -1){return true;}else{return false;}
+			if(comparator.indexOf(value) > -1){return true;}else{return false;}
 		}else{
-			if(value.indexOf(comparator) < -1){return true;}else{return false;}
+			if(comparator.indexOf(value) < -1){return true;}else{return false;}
 		}
 	},
 	"is": function(is, comparator, value){
-		if(is){		
-			if(value == true){return true;}else{return false;}
+		if(is){
+			if(value == comparator){return true;}else{return false;}
 		}else{
-			if(value == false){return true;}else{return false;}
+			if(value != comparator){return true;}else{return false;}
 		}
 	}
 },
