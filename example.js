@@ -54,8 +54,8 @@ d.addErrback(_eb);
 d.addErrback(_eb2);
 d.returnValue(ret);
 }
-_main(1);// output 6 12 24 48
-
+var result = _main(1);// output 6 12 24 48
+console.log("result = " + result);
 //Let's pile our callbacks that must be resolved independently ans will take their own arguments
 function _main2(a){
 	console.log("Starting main2 example function");	

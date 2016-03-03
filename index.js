@@ -318,8 +318,10 @@ module.exports = {
 				var next = this.callbacks[i](value); 				
 				return this.returnValue(next);
 				}else{
-					return this.callbacks[i](value);	
-					break;	
+					// return this.callbacks[i](value);	
+					// break;
+					this.callbacks[i](value);	
+					return this;	
 				}			
 			}
 		}else{
@@ -343,7 +345,8 @@ module.exports = {
 			if(this.errbacks_resolved[x] != true){
 				this.errbacks[x](err, value);
                 this.errbacks_resolved[x] = true;
-				break;
+                // break;
+				return this;
 				}
 				}		
 			}
@@ -410,10 +413,13 @@ module.exports = {
 		var args = this.defered_list_cb_args[i];
 		//this.defered_list_cb[i](args[0]);
 		this.defered_list_cb[i].apply(this,args);
+		return this;
 		}else{
 			console.log("The promise was rejected fallback will fire");
 			this.promises_resolved = true;
-			return this.fallbacks[i](value);
+			//return this.fallbacks[i](value);
+			this.fallbacks[i](value);
+			return this;
 
 		}
 		}else{
@@ -421,6 +427,7 @@ module.exports = {
 		var args = this.defered_list_eb_args[i];
 		//args.push(err)
 		this.defered_list_eb[i].apply(this,err,args);};
+		return this;
 	}	
 }
 
