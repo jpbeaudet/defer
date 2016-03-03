@@ -654,3 +654,120 @@ describe('#promises logical operator', function() {
 			_main33(false);	
 	 });
 });
+describe('#promises multiple args', function() {
+	 
+	 it('promises multiple args deferred();', function() {
+		 function _cb (value){value.should.equal(true); }
+		 function _fb (value){value.should.equal(false);}
+		 function _eb (value){return "Ouch!";}
+		//testing callbacks on promises success for deferred()
+		 function _main(a){  
+		 var ret = a;
+		 var d = defer.Deferred();
+		 d.addCallback(_cb);
+		 d.addFallback(_fb);
+		 d.addPromise(["is",true], ["?","boolean"]);
+		 d.addErrback(_eb);
+		 d.returnValue(ret);
+		 }
+		_main(true);
+		//testing fallbacks on promises rejection for deferred()
+		  function _main2(a){ 				 
+			var ret = a;
+			var d = defer.Deferred();
+		    d.addCallback(_cb);
+			d.addFallback(_fb);
+			d.addPromise(["is",true], ["?","boolean"]);
+			d.addErrback(_eb);
+			d.returnValue(ret);
+			}
+			_main2(false);	
+	 });
+	 it('promises multiple args deferred list();', function() {
+		 function _cb (value){value.should.equal(true); }
+		 function _fb (value){value.should.equal(false);}
+		 function _eb (value){return "Ouch!";}
+		 //testing fallbacks on promises rejection for deferred lists
+		 function _main22(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["is",true], ["!?","string"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+			_main22(true);	
+		 function _main33(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["!is",false], ["?","boolean"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+			_main33(false);			 
+	 });
+	 it('chained promises deferred();', function() {
+		 function _cb (value){value.should.equal(true); }
+		 function _fb (value){value.should.equal(false);}
+		 function _eb (value){return "Ouch!";}
+		//testing callbacks on promises success for deferred()
+		 function _main(a){  
+		 var ret = a;
+		 var d = defer.Deferred();
+		 d.addCallback(_cb);
+		 d.addFallback(_fb);
+		 d.addPromise(["is",true]);
+		 d.addPromise(["?","boolean"]);
+		 d.addErrback(_eb);
+		 d.returnValue(ret);
+		 }
+		_main(true);
+		//testing fallbacks on promises rejection for deferred()
+		  function _main2(a){ 				 
+			var ret = a;
+			var d = defer.Deferred();
+		    d.addCallback(_cb);
+			d.addFallback(_fb);
+			d.addPromise(["is",true]);
+			d.addPromise(["!?","int"]);
+			d.addErrback(_eb);
+			d.returnValue(ret);
+			}
+			_main2(false);	 
+	 });
+	 it('chained promises deferred list();', function() {
+		 function _cb (value){value.should.equal(true); }
+		 function _fb (value){value.should.equal(false);}
+		 function _eb (value){return "Ouch!";}
+		 //testing fallbacks on promises rejection for deferred lists
+		 function _main22(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["is",true]);
+			dl.addPromise(["!?","function"]);
+			dl.addPromise(["?","boolean"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+			_main22(true);	
+		 function _main33(a){  
+			var ret = a;
+			var dl = defer.defered_list();
+			dl.defered_list_addCallback(_cb);
+			dl.addFallback(_fb);
+			dl.addPromise(["is",true]);
+			dl.addPromise(["!?","function"]);
+			dl.addPromise(["?","boolean"]);
+			dl.defered_list_addErrback(_eb);
+			dl.returnValue(ret);
+			}
+			_main33(false);		 
+	 });
+
+});
+	 
