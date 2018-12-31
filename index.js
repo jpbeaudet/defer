@@ -1,7 +1,7 @@
-// Author : Jean-Philippe Beaudet @ S3R3NITY Technologies
+// Author : Jean-Philippe Beaudet 
 // index.js
 // Development of a defered twisted web style node.js promise implementation.
-// version 1.0.0
+// version 1.0.1
 
 module.exports = {
 

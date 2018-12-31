@@ -1,7 +1,15 @@
+// Author : Jean-Philippe Beaudet 
+// example.js
+// Development of a defered twisted web style node.js promise implementation.
+// version 1.0.1
 // test place for defer.js
 
 var defer = require("./index.js");
-
+// use this from npm 
+// var defer = require('defer')
+    
+    
+// Let's create some dummy functions to test
 function _cb(value){
 	var ret = value *2;
 	console.log("ret1: "+ ret);
@@ -56,6 +64,7 @@ d.returnValue(ret);
 }
 var result = _main(1);// output 6 12 24 48
 console.log("result = " + result);
+
 //Let's pile our callbacks that must be resolved independently ans will take their own arguments
 function _main2(a){
 	console.log("Starting main2 example function");	

@@ -1,0 +1,18 @@
+{
+  "name": "defferedjs",
+  "version": "1.0.1",
+  "description": "basic twwisted.web nodejs implementation",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jpbeaudet/defer"
+  },
+  "keywords": [
+    "",
+    ""
+  ],
+  "authors": "Jean-Philippe Beaudet <jpbeaudet@vn3t.com> ",
+  "dependencies": {
+
+  }
+}
